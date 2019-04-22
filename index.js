@@ -10,7 +10,7 @@ const server = express();
 //make express be able to read json format
 server.use(express.json());
 
-//GET request
+//GET all users request
 server.get("/users", (req, res) => {
   db.find()
     .then(users => {
@@ -21,6 +21,21 @@ server.get("/users", (req, res) => {
     });
 });
 
+//GET user by id request
+server.get("/users/:id", (req, res) => {
+  // get id for the responses params
+  const getId = req.params.id;
+
+  db.findById(getId)
+    .then(user => {
+      res.status(200).json(user);
+    })
+    .catch(err => {
+      res.json({ message: "The User with the specified ID does not exist." });
+    });
+});
+
+//make server listen on the set host you want it NEEDS func
 server.listen(5000, () => {
   console.log("\n *** BACKEND PROJECT 1 RUNNING ON PORT 5000 *** \n");
 });

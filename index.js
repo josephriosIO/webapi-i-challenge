@@ -81,6 +81,37 @@ server.delete("/api/users/:id", (req, res) => {
     });
 });
 
+//update user request
+server.put("/api/users/:id", (req, res) => {
+  const userId = req.params.id;
+  const userInputs = req.body;
+
+  if (!userInputs.name || !userInputs.bio) {
+    sendError(500, "Please provide name and bio for the user.", res);
+  }
+
+  db.update(userId, userInputs)
+    .then(user => {
+      if (user === 0) {
+        sendError(404, "The user with the specified ID does not exist.", res);
+      }
+    })
+    .catch(err => {
+      sendError(500, "The user information could not be modified.", res);
+    });
+
+  db.findById(userId)
+    .then(user => {
+      if (user.length === 0) {
+        sendError(404, "user with id can not be found", res);
+      }
+      res.status(200).json(user);
+    })
+    .catch(err => {
+      sendError(500, "failure updating user", res);
+    });
+});
+
 //make server listen on the set host you want it NEEDS func
 server.listen(5000, () => {
   console.log("\n *** BACKEND PROJECT 1 RUNNING ON PORT 5000 *** \n");

@@ -10,8 +10,13 @@ const server = express();
 //make express be able to read json format
 server.use(express.json());
 
+//helper error to user function
+const sendError = (status, message, res) => {
+  res.status(status).json({ errorMessage: message });
+};
+
 //GET all users request
-server.get("/users", (req, res) => {
+server.get("/api/users", (req, res) => {
   db.find()
     .then(users => {
       res.status(200).json(users);
@@ -22,16 +27,40 @@ server.get("/users", (req, res) => {
 });
 
 //GET user by id request
-server.get("/users/:id", (req, res) => {
+server.get("/api/users/:id", (req, res) => {
   // get id for the responses params
   const getId = req.params.id;
 
   db.findById(getId)
     .then(user => {
+      if (user.length === 0) {
+        sendError(404, "The User with the specified ID does not exist.", res);
+      }
       res.status(200).json(user);
     })
     .catch(err => {
-      res.json({ message: "The User with the specified ID does not exist." });
+      sendError(500, "The user information could not be retrieved.", res);
+    });
+});
+
+//create a user request
+server.post("/api/users", (req, res) => {
+  const userInput = req.body;
+
+  if (!userInput.name || !userInput.bio) {
+    sendError(500, "Please provide name and bio for the user.", res);
+  }
+
+  db.insert(userInput)
+    .then(user => {
+      res.status(201).json(user);
+    })
+    .catch(err => {
+      sendError(
+        500,
+        "There was an error while saving the user to the database",
+        res
+      );
     });
 });
 

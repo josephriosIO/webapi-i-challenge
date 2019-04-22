@@ -1,5 +1,6 @@
 // implement your API here
 const express = require("express");
+const cors = require("cors");
 
 //local imports
 const db = require("./data/db");
@@ -9,6 +10,9 @@ const server = express();
 
 //make express be able to read json format
 server.use(express.json());
+
+//cors
+server.use(cors());
 
 //helper error to user function
 const sendError = (status, message, res) => {

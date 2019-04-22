@@ -64,6 +64,23 @@ server.post("/api/users", (req, res) => {
     });
 });
 
+//delete user request
+server.delete("/api/users/:id", (req, res) => {
+  const userId = req.params.id;
+  db.remove(userId)
+    .then(user => {
+      console.log(user);
+      //if user comes back as 0 send error code
+      if (user === 0) {
+        sendError(404, "The user with the specified ID does not exist.", res);
+      }
+      res.json(user);
+    })
+    .catch(err => {
+      sendError(500, "The user could not be removed", res);
+    });
+});
+
 //make server listen on the set host you want it NEEDS func
 server.listen(5000, () => {
   console.log("\n *** BACKEND PROJECT 1 RUNNING ON PORT 5000 *** \n");

@@ -73,7 +73,6 @@ server.delete("/api/users/:id", (req, res) => {
   const userId = req.params.id;
   db.remove(userId)
     .then(user => {
-      console.log(user);
       //if user comes back as 0 send error code
       if (user === 0) {
         sendError(404, "The user with the specified ID does not exist.", res);

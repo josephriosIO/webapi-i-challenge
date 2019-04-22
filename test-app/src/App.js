@@ -16,7 +16,12 @@ class App extends Component {
     return (
       <div className="App">
         {!this.props.fetching
-          ? this.props.users.map(user => <div>{user.name}</div>)
+          ? this.props.users.map(user => (
+              <div>
+                <h1>{user.name}</h1>
+                <p>{user.bio}</p>
+              </div>
+            ))
           : null}
       </div>
     );
